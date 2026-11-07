@@ -13,6 +13,19 @@ y compara la **solución analítica** `C(t) = M - (M - C0) e^(-k (t - t0))` con 
 > Los parámetros del proyecto (C0 = 10 clientes, M = 100 clientes, k = 0.3 por mes, 0 a 12 meses) son **hipotéticos**.
 > Los resultados son una estimación matemática, no una predicción comprobada.
 
+## 🌐 Aplicación publicada
+
+**https://desaf-oedo-production.up.railway.app**
+
+> Alojada en Railway (aplicación + MySQL). Si tarda en abrir, espere a que el indicador diga
+> "Servidor y base de datos conectados".
+
+| Entregable | Enlace |
+|---|---|
+| Aplicación web | https://desaf-oedo-production.up.railway.app |
+| Repositorio | https://github.com/Saul-C006/Desaf-oEDO |
+| Guion del video | [docs/GUION_VIDEO.md](docs/GUION_VIDEO.md) |
+
 ![TECHFIX](docs/capturas/simulacion.png)
 
 ## Estado del proyecto
@@ -25,7 +38,7 @@ y compara la **solución analítica** `C(t) = M - (M - C0) e^(-k (t - t0))` con 
 | 4. Backend (Node.js + Express) | ✅ `docs/BACKEND.md` |
 | 5. Frontend (HTML, CSS, JS, Chart.js) | ✅ `docs/FRONTEND.md` |
 | 6. Pruebas (60 automáticas + Python + navegador) | ✅ `docs/PRUEBAS.md` |
-| 7. Publicación (Railway) | ✅ `DEPLOY.md` |
+| 7. Publicación (Railway) | ✅ https://desaf-oedo-production.up.railway.app · `DEPLOY.md` |
 | 8. Preparación de la defensa | Pendiente |
 
 ## Tecnologías
