@@ -25,7 +25,7 @@ y compara la **solución analítica** `C(t) = M - (M - C0) e^(-k (t - t0))` con 
 | 4. Backend (Node.js + Express) | ✅ `docs/BACKEND.md` |
 | 5. Frontend (HTML, CSS, JS, Chart.js) | ✅ `docs/FRONTEND.md` |
 | 6. Pruebas (60 automáticas + Python + navegador) | ✅ `docs/PRUEBAS.md` |
-| 7. Publicación | Pendiente |
+| 7. Publicación (Railway) | ✅ `DEPLOY.md` |
 | 8. Preparación de la defensa | Pendiente |
 
 ## Tecnologías

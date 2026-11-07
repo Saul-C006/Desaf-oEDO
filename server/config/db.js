@@ -25,20 +25,46 @@ function configuracionSSL() {
   return ssl;
 }
 
+/**
+ * Datos de conexión comunes (también los usa la instalación automática de tablas).
+ * Se aceptan dos formas:
+ *   1) Variables separadas: DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME (local / XAMPP).
+ *   2) Una sola URL: MYSQL_URL o DATABASE_URL = mysql://usuario:clave@host:puerto/base
+ *      (así la entregan proveedores como Railway).
+ */
+function configuracionConexion() {
+  const url = process.env.MYSQL_URL || process.env.DATABASE_URL;
+  if (url && !process.env.DB_HOST) {
+    const u = new URL(url);
+    return {
+      host: u.hostname,
+      port: Number(u.port || 3306),
+      user: decodeURIComponent(u.username),
+      password: decodeURIComponent(u.password),
+      database: decodeURIComponent(u.pathname.replace(/^\//, '')),
+      ssl: configuracionSSL(),
+      connectTimeout: 15000,
+    };
+  }
+  return {
+    host: process.env.DB_HOST || 'localhost',
+    port: Number(process.env.DB_PORT || 3306),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    ssl: configuracionSSL(),
+    connectTimeout: 15000,
+  };
+}
+
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  ssl: configuracionSSL(),
+  ...configuracionConexion(),
   waitForConnections: true,
   connectionLimit: Number(process.env.DB_CONNECTION_LIMIT || 5), // bajo: los planes gratuitos limitan conexiones
   queueLimit: 0,
   timezone: 'Z',       // las fechas se interpretan en UTC
   dateStrings: false,
   decimalNumbers: true,
-  connectTimeout: 15000,
 });
 
 // Cada conexión nueva trabaja en UTC, para que CURRENT_TIMESTAMP sea igual en local y en la nube.
@@ -71,4 +97,4 @@ async function comprobarConexion() {
   return filas[0].ok === 1;
 }
 
-module.exports = { pool, enTransaccion, comprobarConexion };
+module.exports = { pool, enTransaccion, comprobarConexion, configuracionConexion };

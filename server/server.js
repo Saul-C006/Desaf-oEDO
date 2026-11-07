@@ -6,7 +6,8 @@
 require('dotenv').config({ quiet: true }); // lee el archivo .env (solo en local)
 
 const app = require('./app');
-const { comprobarConexion, pool } = require('./config/db');
+const { comprobarConexion, pool, configuracionConexion } = require('./config/db');
+const { instalarSiFalta } = require('./config/instalarBD');
 
 const PUERTO = Number(process.env.PORT || 3000); // los hostings definen PORT automáticamente
 
@@ -14,7 +15,9 @@ const servidor = app.listen(PUERTO, async () => {
   console.log(`TECHFIX escuchando en http://localhost:${PUERTO}`);
   try {
     await comprobarConexion();
-    console.log(`Conectado a MySQL (${process.env.DB_HOST}/${process.env.DB_NAME}).`);
+    const c = configuracionConexion();
+    console.log(`Conectado a MySQL (${c.host}/${c.database}).`);
+    console.log(`Tablas de la base de datos: ${await instalarSiFalta()}.`);
   } catch (error) {
     // No se detiene el servidor: /api/salud informará el problema.
     console.error('ADVERTENCIA: no se pudo conectar a MySQL:', error.code || error.message);
