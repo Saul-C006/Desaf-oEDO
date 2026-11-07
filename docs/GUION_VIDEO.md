@@ -1,17 +1,33 @@
-# TECHFIX — Guion del video (≈ 1 minuto)
+# TECHFIX — Guion literal del video (≈ 1 minuto)
 
-Unas 150 palabras: a ritmo normal, 55 a 65 segundos. Grabe la pantalla con la aplicación publicada abierta.
+Orden pedido por el docente: problema → EDO y condición inicial → solución analítica, Heun y RK4 →
+mostrar la aplicación → resultados y conclusiones. Unas 155 palabras ≈ 60 segundos.
 
-| Tiempo | Pantalla | Qué decir |
-|---|---|---|
-| 0:00–0:10 | **Inicio** | "Soy *[nombre]*. Mi desafío es TECHFIX: estimar cómo crecen los clientes de un emprendimiento de reparación de celulares y computadoras en su primer año, para ayudar a pequeños emprendedores a planificar." |
-| 0:10–0:22 | **Modelo matemático** (EDO y solución) | "Uso la EDO de crecimiento limitado dC/dt = k(M − C), con C(0) = 10 clientes, mercado M = 100 y k = 0.3 por mes, valores hipotéticos. Su solución exacta es C(t) = 100 − 90e^(−0.3t), y la verifiqué por sustitución." |
-| 0:22–0:34 | **Modelo** (Heun y RK4) → **Configuración** → Ejecutar | "Heun promedia dos pendientes por paso; RK4 combina cuatro con pesos 1-2-2-1. La aplicación calcula los tres métodos con los mismos parámetros y los guarda en MySQL." |
-| 0:34–0:46 | **Simulación** y **Gráficas** | "Con h = 1, a los 12 meses el valor exacto es 97.54 clientes; Heun da 97.37 y RK4 97.540. El error máximo de RK4 es unas 218 veces menor que el de Heun." |
-| 0:46–0:55 | **Comparación de h** | "Al reducir h de 1 a 0.5, el error de Heun baja 4.6 veces y el de RK4 18 veces, como predicen sus órdenes 2 y 4." |
-| 0:55–1:05 | **Interpretación** / Informe PDF | "Conclusión: la cartera crece rápido y se estabiliza cerca de 100 clientes; el 90 % se alcanza hacia el mes 7.3. RK4 es el método más preciso. Gracias." |
+## Antes de grabar (2 minutos)
 
-**Consejos:**
-- Antes de grabar, ejecute una simulación (h = 1) y una comparación para que todo tenga datos.
-- Si la página tarda en abrir, espere a que el indicador diga "Servidor y base de datos conectados".
-- Muestre el enlace público en la barra del navegador.
+1. Abra **https://desaf-oedo-production.up.railway.app** y presione **Ctrl + F5**.
+   Espere a que abajo a la izquierda diga **"Servidor y base de datos conectados"**.
+2. **Configuración** → **Restaurar valores del proyecto** → **Ejecutar y guardar simulación** (h = 1).
+3. **Comparación de h** → **Ejecutar comparación h = 1 y h = 0.5**.
+4. Vuelva a **Inicio** (arriba del todo).
+5. Cierre otras pestañas y silencie notificaciones. Zoom del navegador al 90 % (Ctrl + −) para que entre más contenido.
+6. Grabar en Windows: **Win + Alt + R** (Xbox Game Bar) graba la ventana activa; con **Win + G** active el micrófono.
+
+## Guion
+
+| # | Tiempo | Pantalla y acción | Texto literal (en voz alta) |
+|---|---|---|---|
+| 1 | 0:00–0:08 | **Inicio** (parte de arriba, se ve TECHFIX) | "Soy *[nombre y apellido]*. Mi proyecto, TECHFIX, estima cuántos clientes tendrá un pequeño taller de reparación de celulares y computadoras en su primer año, para ayudarle a planificar." |
+| 2 | 0:08–0:20 | Clic en **Modelo matemático** → se ve el punto **2. Formulación** | "Uso la ecuación diferencial de crecimiento limitado: de C sobre de t igual a k por, M menos C. Los clientes crecen según los que faltan por captar. La condición inicial es C de cero igual a 10 clientes, con un mercado de 100 y k igual a 0.3 por mes, valores hipotéticos." |
+| 3 | 0:20–0:28 | Bajar al punto **4. Solución analítica** (señalar la fórmula final) | "Separando variables obtengo la solución analítica exacta: C de t igual a 100 menos 90 por e elevado a menos 0.3 t. La verifiqué por sustitución y la uso como referencia." |
+| 4 | 0:28–0:36 | Bajar a **6. Heun** y **7. RK4** | "Para aproximarla, Heun promedia dos pendientes en cada paso, y Runge-Kutta 4 combina cuatro pendientes, por eso es más preciso." |
+| 5 | 0:36–0:46 | Clic en **Configuración** → **Ejecutar y guardar simulación** → aparece **Simulación** (tarjetas y tabla) → clic en **Gráficas** | "En la aplicación ingreso los parámetros y el paso h. Calcula los tres métodos, los guarda en MySQL y muestra la tabla con los errores y las gráficas." |
+| 6 | 0:46–0:56 | Clic en **Comparación de h** (se ven ÷ 4.59 y ÷ 18.14) | "A los 12 meses, el valor exacto es 97.54 clientes; RK4 da 97.54 y Heun 97.37. Al reducir h de 1 a 0.5, el error de Heun baja 4.6 veces y el de RK4, 18 veces." |
+| 7 | 0:56–1:03 | Clic en **Interpretación** (se ve "Respuesta a la pregunta del desafío") | "En conclusión, la cartera crece rápido y se estabiliza cerca de 100 clientes, y RK4 es el método más preciso. Gracias." |
+
+## Consejos
+
+- Ensaye 2 veces leyendo en voz alta con un cronómetro.
+- Si se pasa de 1 minuto, quite la segunda oración del bloque 2 ("Los clientes crecen según los que faltan por captar").
+- Mueva el mouse despacio y señale con el cursor lo que está diciendo (la fórmula, el valor 97.54, el ÷ 4.59).
+- Que se vea el enlace público en la barra del navegador.
