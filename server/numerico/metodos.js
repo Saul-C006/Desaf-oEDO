@@ -161,19 +161,31 @@ function simular(p) {
     });
   }
 
+  return { parametros: { ...p }, filas, resumen: resumir(filas), avisos: calcularAvisos(p, pasoFinalAjustado) };
+}
+
+/**
+ * Avisos sobre el tamaño de paso (no impiden simular; ayudan a interpretar).
+ * Si no se indica pasoFinalAjustado, se calcula a partir de los parámetros.
+ */
+function calcularAvisos(p, pasoFinalAjustado = generarTiempos(p.t0, p.tf, p.h).pasoFinalAjustado) {
   const avisos = [];
   if (pasoFinalAjustado) {
     avisos.push(
       `h = ${p.h} no divide exactamente el intervalo; el último paso se acortó para terminar en t = ${p.tf} meses.`
     );
   }
-  if (p.k * p.h > 1) {
+  const kh = p.k * p.h;
+  if (kh > 2) {
     avisos.push(
-      `k·h = ${(p.k * p.h).toFixed(3)} es mayor que 1: con pasos tan grandes los métodos numéricos pierden precisión y pueden oscilar.`
+      `k·h = ${kh.toFixed(3)} es mayor que 2: el método de Heun se vuelve inestable (sus errores crecen en cada paso). Reduzca h.`
+    );
+  } else if (kh > 1) {
+    avisos.push(
+      `k·h = ${kh.toFixed(3)} es mayor que 1: con pasos tan grandes los métodos numéricos pierden precisión.`
     );
   }
-
-  return { parametros: { ...p }, filas, resumen: resumir(filas), avisos };
+  return avisos;
 }
 
 /** Resumen útil para tarjetas, interpretación e informes. */
@@ -215,6 +227,15 @@ function compararTamaniosPaso(base, pasos = [1, 0.5]) {
     const sim = simular({ ...base, h });
     return { h, resumen: sim.resumen, filas: sim.filas, avisos: sim.avisos };
   });
+  const reducciones = calcularReducciones(experimentos);
+  return { experimentos, reducciones };
+}
+
+/**
+ * Cuántas veces se redujo el error final al pasar de un experimento al siguiente.
+ * @param {{h:number, resumen:object}[]} experimentos  ordenados de mayor a menor h
+ */
+function calcularReducciones(experimentos) {
   const reducciones = [];
   for (let i = 1; i < experimentos.length; i++) {
     const a = experimentos[i - 1].resumen;
@@ -226,7 +247,7 @@ function compararTamaniosPaso(base, pasos = [1, 0.5]) {
       factorRK4: b.errorAbsFinalRK4 === 0 ? null : a.errorAbsFinalRK4 / b.errorAbsFinalRK4,
     });
   }
-  return { experimentos, reducciones };
+  return reducciones;
 }
 
 /** Parámetros hipotéticos del proyecto (no son datos reales). */
@@ -243,6 +264,8 @@ module.exports = {
   generarTiempos,
   comprobarParametros,
   simular,
+  calcularAvisos,
   resumir,
   compararTamaniosPaso,
+  calcularReducciones,
 };
