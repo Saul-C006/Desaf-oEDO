@@ -168,29 +168,51 @@
         </ul>
       </article>
 
-      <div class="grid-2">
-        <article class="tarjeta">
-          <h3>4. Solución analítica paso a paso</h3>
-          <ol class="pasos">
-            <li>Separar variables: <span class="formula-linea">dC / (M − C) = k dt</span></li>
-            <li>Integrar: <span class="formula-linea">−ln(M − C) = k t + K</span></li>
-            <li>Despejar: <span class="formula-linea">M − C = A e<sup>−kt</sup></span>  (A = e<sup>−K</sup>)</li>
-            <li>Condición inicial C(0) = C₀: <span class="formula-linea">A = M − C₀</span></li>
-            <li>Solución: <span class="formula-linea"><b>C(t) = M − (M − C₀) e<sup>−kt</sup></b></span></li>
-          </ol>
-          <div class="formula">C(t) = 100 − 90 e<sup>−0.3t</sup></div>
-        </article>
-        <article class="tarjeta">
-          <h3>5. Verificación de la solución</h3>
-          <p><b>Por sustitución:</b></p>
-          <div class="formula">C′(t) = 90·0.3·e<sup>−0.3t</sup> = 27 e<sup>−0.3t</sup></div>
-          <div class="formula">0.3 (100 − C) = 0.3·90·e<sup>−0.3t</sup> = 27 e<sup>−0.3t</sup></div>
-          <p>Ambos lados son iguales: la solución cumple la EDO ✔</p>
-          <p><b>Condición inicial:</b> C(0) = 100 − 90·e⁰ = 100 − 90 = <b>10</b> ✔</p>
-          <p><b>Largo plazo:</b> si t → ∞, e<sup>−0.3t</sup> → 0 y C → 100 = M (nunca lo supera) ✔</p>
-          <p class="nota">Además, las pruebas automáticas comparan la aplicación con un programa independiente con aritmética exacta: diferencia máxima 3.7 × 10⁻¹⁴.</p>
-        </article>
-      </div>
+      <article class="tarjeta">
+        <h3>4. Solución analítica paso a paso</h3>
+        <p>La EDO es <b>de variables separables</b>: su lado derecho es una constante (k) por una función que solo depende de C (M − C). Se resuelve en 8 pasos:</p>
+        <ol class="pasos pasos-detalle">
+          <li><b>Escribir el problema de valor inicial.</b>
+            <div class="formula">dC/dt = k (M − C),    C(0) = C₀</div></li>
+          <li><b>Separar variables:</b> todo lo que tiene C a la izquierda y todo lo que tiene t a la derecha (se divide entre M − C y se multiplica por dt).
+            <div class="formula">dC / (M − C) = k dt</div>
+            <span class="nota">Es válido porque C ≠ M: como C₀ &lt; M, la cartera nunca llega exactamente a M.</span></li>
+          <li><b>Integrar ambos lados.</b> A la izquierda se usa la sustitución u = M − C, du = −dC:
+            <div class="formula">∫ dC/(M − C) = −∫ du/u = −ln|M − C|<br>∫ k dt = k t + K      (K = constante de integración)</div></li>
+          <li><b>Igualar y quitar el valor absoluto.</b> Como C &lt; M, entonces M − C &gt; 0 y |M − C| = M − C:
+            <div class="formula">−ln(M − C) = k t + K   ⟹   ln(M − C) = −k t − K</div></li>
+          <li><b>Aplicar la exponencial</b> a ambos lados para despejar M − C:
+            <div class="formula">M − C = e<sup>−K</sup> · e<sup>−kt</sup> = A e<sup>−kt</sup>      (A = e<sup>−K</sup> &gt; 0)</div></li>
+          <li><b>Usar la condición inicial</b> C(0) = C₀ (en t = 0, e⁰ = 1):
+            <div class="formula">M − C₀ = A · 1   ⟹   A = M − C₀</div></li>
+          <li><b>Solución general:</b>
+            <div class="formula"><b>C(t) = M − (M − C₀) e<sup>−kt</sup></b></div>
+            <span class="nota">Si el tiempo inicial no es 0: C(t) = M − (M − C₀) e<sup>−k(t − t₀)</sup> (así está programada).</span></li>
+          <li><b>Sustituir los valores del proyecto</b> (C₀ = 10, M = 100, k = 0.3):
+            <div class="formula"><b>C(t) = 100 − 90 e<sup>−0.3t</sup></b></div></li>
+        </ol>
+        <p><b>Ejemplos numéricos:</b></p>
+        <div class="formula">C(1)  = 100 − 90·e<sup>−0.3</sup> = 100 − 90·(0.740818) = 100 − 66.673640 = <b>33.326360</b> clientes<br>C(12) = 100 − 90·e<sup>−3.6</sup> = 100 − 90·(0.027324) = 100 − 2.459135  = <b>97.540865</b> clientes</div>
+      </article>
+
+      <article class="tarjeta">
+        <h3>5. Verificación de la solución</h3>
+        <div class="grid-2 grid-sin-margen">
+          <div>
+            <p><b>a) Por sustitución en la EDO (forma general):</b></p>
+            <div class="formula">C(t) = M − (M − C₀) e<sup>−kt</sup><br>C′(t) = −(M − C₀)·(−k)·e<sup>−kt</sup> = k (M − C₀) e<sup>−kt</sup></div>
+            <div class="formula">k (M − C) = k [M − M + (M − C₀) e<sup>−kt</sup>] = k (M − C₀) e<sup>−kt</sup></div>
+            <p>Lado izquierdo = lado derecho ⟹ la solución cumple la EDO ✔</p>
+          </div>
+          <div>
+            <p><b>b) Con los valores del proyecto:</b></p>
+            <div class="formula">C′(t) = 90·0.3·e<sup>−0.3t</sup> = 27 e<sup>−0.3t</sup><br>0.3 (100 − C) = 0.3·90·e<sup>−0.3t</sup> = 27 e<sup>−0.3t</sup>   ✔</div>
+            <p><b>c) Condición inicial:</b> C(0) = 100 − 90·e⁰ = 100 − 90 = <b>10 = C₀</b> ✔</p>
+            <p><b>d) Comportamiento:</b> C′(t) &gt; 0 (siempre crece) y si t → ∞, e<sup>−0.3t</sup> → 0, así que C → 100 = M sin superarlo ✔</p>
+          </div>
+        </div>
+        <p class="nota">Además, las pruebas automáticas comparan la aplicación con un programa independiente con aritmética exacta: diferencia máxima 3.7 × 10⁻¹⁴.</p>
+      </article>
 
       <div class="grid-2">
         <article class="tarjeta borde-heun">
@@ -431,7 +453,7 @@
           <div class="tarjeta"><h3>Influencia del tamaño de paso</h3><p data-int="paso"></p></div>
         </div>
         <div class="avisos" data-sim="avisos"></div>
-        <div class="tarjeta conclusion"><h3>Conclusión</h3><p data-int="conclusion"></p></div>
+        <div class="tarjeta conclusion"><h3>Respuesta a la pregunta del desafío</h3><p class="nota"><i>¿Cómo puede estimarse el crecimiento de clientes de un emprendimiento de soporte técnico durante sus primeros meses y qué tan precisos son los métodos de Heun y RK4?</i></p><p data-int="conclusion"></p></div>
         <div class="tarjeta"><h3>Limitaciones del modelo</h3><ul data-int="limitaciones"></ul></div>
       </div>
     </section>

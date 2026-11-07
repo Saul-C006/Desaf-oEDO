@@ -146,6 +146,9 @@ sub, sup { line-height: 0; }  /* evita que los subíndices (t₀, t_f) desalinee
 .formula-linea { font-family: var(--mono); background: var(--superficie-2); padding: 0.05rem 0.35rem; border-radius: 4px; white-space: nowrap; }
 .pasos { padding-left: 1.2rem; margin: 0 0 0.75rem; }
 .pasos li { margin-bottom: 0.55rem; }
+.pasos-detalle li { margin-bottom: 0.9rem; }
+.pasos-detalle .formula { margin: 0.35rem 0 0.3rem; }
+.grid-sin-margen { margin-bottom: 0; gap: 1.5rem; }
 .lista { padding-left: 1.2rem; margin: 0 0 0.75rem; }
 .lista li { margin-bottom: 0.3rem; }
 .borde-heun { border-top: 3px solid var(--heun); }

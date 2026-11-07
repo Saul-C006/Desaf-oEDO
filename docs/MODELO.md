@@ -1,4 +1,4 @@
-# TECHFIX — Modelo matemático y métodos numéricos (Etapa 2)
+# TECHFIX — Documento académico: modelo matemático y métodos numéricos
 
 > **Parámetros hipotéticos.** Los valores C0 = 10, M = 100 y k = 0.3 son supuestos didácticos,
 > no datos medidos de un negocio real. Los resultados son una **estimación matemática**, no una
@@ -6,6 +6,37 @@
 >
 > Todos los números de este documento salen del código (`npm run tabla`) y están comprobados por
 > las pruebas automáticas (`npm test`). Ninguno se escribió a mano.
+
+---
+
+## 0. Planteamiento del desafío
+
+**Nombre del desafío:** TECHFIX: estimación del crecimiento de clientes de un emprendimiento de soporte técnico mediante ecuaciones diferenciales y métodos numéricos.
+
+**Planteamiento del problema.** TechFix es un emprendimiento de reparación y mantenimiento de celulares y computadoras.
+Comienza con pocos clientes y consigue nuevos gracias a la publicidad, las recomendaciones y la calidad del servicio.
+El emprendedor no sabe cómo podría evolucionar su cartera de clientes en los primeros meses, información que necesita
+para planificar horarios, compra de repuestos y publicidad.
+
+**Contexto y beneficiarios.** Emprendedores tecnológicos, técnicos independientes, pequeños negocios de reparación
+y personas que desean iniciar un emprendimiento tecnológico. Una estimación del crecimiento ayuda a planificar
+y a reducir el riesgo de cierre en los primeros meses.
+
+**Pregunta de investigación.** ¿Cómo puede estimarse el crecimiento de clientes de un emprendimiento de soporte técnico
+durante sus primeros meses de funcionamiento y qué tan precisos son los métodos de Heun y Runge-Kutta de cuarto orden?
+
+**Objetivo general.** Modelar el crecimiento de la cartera de clientes de TechFix con una EDO de primer orden y comparar
+la precisión de los métodos de Heun y RK4 frente a la solución analítica, mediante una aplicación web.
+
+**Objetivos específicos.**
+1. Formular y justificar la EDO de crecimiento limitado dC/dt = k(M − C) con su condición inicial.
+2. Obtener la solución analítica y verificarla por sustitución.
+3. Implementar los métodos de Heun (RK2) y RK4 con los mismos parámetros, condición inicial e intervalo.
+4. Calcular errores absolutos y relativos porcentuales y comparar los tamaños de paso h = 1 y h = 0.5.
+5. Desarrollar y publicar una aplicación web con MySQL que muestre tablas, gráficas, interpretación e informes PDF.
+
+**Meta cuantificable.** Estimar los clientes al mes 12 y el mes en que se alcanza el 50 % y el 90 % del mercado;
+determinar qué método tiene menor error y cuántas veces disminuye el error al reducir h a la mitad.
 
 ---
 
@@ -306,3 +337,29 @@ Con pasos aún menores, los factores se acercan a los valores teóricos
 - k y M son constantes e hipotéticos; en la realidad tendrían que estimarse con datos del negocio.
 - El resultado es un promedio continuo, no un conteo exacto de personas.
 - Sirve para comprender la tendencia (crecimiento rápido al inicio y luego saturación), no para garantizar cifras.
+
+---
+
+## 12. Conclusiones
+
+1. El modelo dC/dt = k(M − C) describe un crecimiento rápido al inicio que se frena al acercarse al mercado potencial:
+   con los parámetros hipotéticos, la cartera pasa de 10 a 97.54 clientes en 12 meses; el 50 % del mercado se alcanza
+   en el mes 1.96 y el 90 % en el mes 7.32.
+2. La solución analítica C(t) = 100 − 90e^(−0.3t) cumple la EDO y la condición inicial, y sirvió como referencia exacta.
+3. Ambos métodos reproducen bien la solución, pero **RK4 es mucho más preciso**: con h = 1 su error máximo
+   (0.002857 clientes) es unas 218 veces menor que el de Heun (0.623157 clientes).
+4. Reducir h de 1 a 0.5 disminuye el error final de Heun 4.59 veces y el de RK4 18.14 veces, de acuerdo con
+   sus órdenes teóricos 2 y 4 (≈ 4 y ≈ 16 veces).
+5. **Respuesta a la pregunta:** el crecimiento de clientes puede estimarse con una EDO de crecimiento limitado y
+   resolverse numéricamente; RK4 da resultados prácticamente iguales a la solución exacta, y Heun, aunque menos
+   preciso, mantiene un error relativo menor al 1.13 % con h = 1 y menor al 0.26 % con h = 0.5.
+
+## 13. Bibliografía
+
+- Chapra, S. C., y Canale, R. P. (2015). *Métodos numéricos para ingenieros* (7.ª ed.). McGraw-Hill.
+  Capítulo de métodos de Runge-Kutta (Heun y RK4 clásico).
+- Burden, R. L., Faires, J. D., y Burden, A. M. (2017). *Análisis numérico* (10.ª ed.). Cengage Learning.
+  Métodos de Runge-Kutta y orden de convergencia.
+- Zill, D. G. (2015). *Ecuaciones diferenciales con aplicaciones de modelado* (10.ª ed.). Cengage Learning.
+  Ecuaciones separables y modelos de crecimiento limitado.
+
