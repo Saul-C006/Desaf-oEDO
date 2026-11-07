@@ -24,7 +24,7 @@ y compara la **solución analítica** `C(t) = M - (M - C0) e^(-k (t - t0))` con 
 | 3. Base de datos MySQL | ✅ `docs/BASE_DE_DATOS.md` |
 | 4. Backend (Node.js + Express) | ✅ `docs/BACKEND.md` |
 | 5. Frontend (HTML, CSS, JS, Chart.js) | ✅ `docs/FRONTEND.md` |
-| 6. Pruebas | Pendiente |
+| 6. Pruebas (60 automáticas + Python + navegador) | ✅ `docs/PRUEBAS.md` |
 | 7. Publicación | Pendiente |
 | 8. Preparación de la defensa | Pendiente |
 
@@ -59,6 +59,8 @@ Node.js 22+, Express, MySQL 8 (mysql2), dotenv, PDFKit, HTML/CSS/JavaScript y Ch
 | `npm run dev` | Inicia el servidor y lo reinicia al guardar cambios |
 | `npm test` | Ejecuta todas las pruebas |
 | `npm run test:api` | Solo las pruebas de la API (requiere MySQL) |
+| `npm run verificar` | Verificación independiente de los cálculos en Python |
+| `npm run test:e2e` | Prueba en navegador real (requiere Playwright, ver `docs/PRUEBAS.md`) |
 | `npm run tabla` | Imprime las tablas de h = 1 y h = 0.5 |
 | `npm run datos-prueba` | Regenera `database/datos_prueba.sql` desde el código |
 

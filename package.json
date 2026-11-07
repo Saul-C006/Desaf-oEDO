@@ -9,7 +9,9 @@
     "test": "node --test \"tests/**/*.test.js\"",
     "test:api": "node --test tests/api.test.js",
     "tabla": "node scripts/tabla.js",
-    "datos-prueba": "node scripts/generar_datos_prueba.js"
+    "datos-prueba": "node scripts/generar_datos_prueba.js",
+    "test:e2e": "node tests/e2e/navegador.e2e.js",
+    "verificar": "python tests/verificacion_independiente.py"
   },
   "engines": {
     "node": ">=22"

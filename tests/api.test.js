@@ -11,7 +11,8 @@ require('dotenv').config({ quiet: true });
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const app = require('../server/app');
-const { pool, comprobarConexion } = require('../server/config/db');
+const { pool, comprobarConexion, enTransaccion } = require('../server/config/db');
+const { textoDePdf } = require('./util/pdfTexto');
 const metodos = require('../server/numerico/metodos');
 
 const BASE_PARAMS = { C0: 10, M: 100, k: 0.3, t0: 0, tf: 12 };
@@ -211,4 +212,80 @@ conBD('Identificadores inválidos (400) e inexistentes (404)', async () => {
   assert.equal((await api('GET', '/simulaciones/99999999')).estado, 404);
   assert.equal((await api('DELETE', '/informes/99999999')).estado, 404);
   assert.equal((await api('GET', '/no-existe')).estado, 404);
+});
+
+// ---------------------------------------------------------------------- Etapa 6
+
+conBD('Seguridad: un texto con SQL malicioso se guarda como texto y no se ejecuta', async () => {
+  const malicioso = "x'); DROP TABLE simulaciones; -- <script>alert(1)</script>";
+  const r = await crearSim({ ...BASE_PARAMS, h: 1, nombre_desafio: malicioso });
+  assert.equal(r.estado, 201);
+  const leida = await api('GET', `/simulaciones/${r.datos.id}`);
+  assert.equal(leida.datos.nombre, malicioso);
+  const [[t]] = await pool.query("SELECT COUNT(*) AS n FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'simulaciones'");
+  assert.equal(t.n, 1); // la tabla sigue existiendo
+});
+
+conBD('Transacción: si algo falla a mitad del guardado, no queda nada a medias', async () => {
+  const [[antes]] = await pool.query('SELECT (SELECT COUNT(*) FROM simulaciones) AS s, (SELECT COUNT(*) FROM resultados) AS r');
+  await assert.rejects(enTransaccion(async (conexion) => {
+    const [res] = await conexion.execute(
+      `INSERT INTO simulaciones (nombre_desafio, condicion_inicial, mercado_potencial, tasa_crecimiento, tiempo_inicial, tiempo_final, tamanio_paso)
+       VALUES ('incompleta', 10, 100, 0.3, 0, 12, 1)`
+    );
+    await conexion.execute(
+      `INSERT INTO resultados (id_simulacion, iteracion, tiempo, valor_analitico, valor_heun, error_absoluto_heun, valor_rk4, error_absoluto_rk4)
+       VALUES (?, 0, 0, 10, 10, 0, 10, 0)`, [res.insertId]
+    );
+    throw new Error('Falla simulada a mitad del guardado');
+  }));
+  const [[despues]] = await pool.query('SELECT (SELECT COUNT(*) FROM simulaciones) AS s, (SELECT COUNT(*) FROM resultados) AS r');
+  assert.deepEqual(despues, antes);
+});
+
+conBD('PDF: contiene las 18 secciones y los valores reales de la simulación', async () => {
+  const { datos: sim } = await crearSim({ ...BASE_PARAMS, h: 1 });
+  const { datos: inf } = await api('POST', `/simulaciones/${sim.id}/informes`, {});
+  const pdf = await api('GET', `/informes/${inf.id}/pdf`);
+  const texto = textoDePdf(pdf.datos);
+  const secciones = [
+    '1. Nombre del proyecto', '2. Nombre del desafío', '3. Descripción del problema', '4. Objetivo',
+    '5. Modelo matemático', '6. Ecuación diferencial', '7. Condición inicial', '8. Parámetros utilizados',
+    '9. Solución analítica', '10. Desarrollo resumido del método de Heun', '11. Desarrollo resumido del método de Runge-Kutta',
+    '12. Tabla comparativa', '13. Gráfica de las tres soluciones', '14. Tabla de errores absolutos y relativos',
+    '15. Comparación de tamaños de paso', '16. Interpretación de resultados', '17. Conclusiones', '18. Limitaciones del modelo',
+  ];
+  for (const sec of secciones) assert.ok(texto.includes(sec), `Falta la sección «${sec}»`);
+  // Valores reales (mismos que la tabla de la Etapa 2)
+  for (const v of ['97.540865', '97.369019', '97.540097', '32.950000', '33.324625']) assert.ok(texto.includes(v), `Falta ${v}`);
+  // En el PDF los párrafos justificados no llevan espacios (PDFKit separa las palabras
+  // con ajustes de posición) y se cortan en varias líneas: se comparan sin espacios.
+  const plano = (x) => x.replace(/\s+/g, '');
+  assert.ok(plano(texto).includes(plano(inf.conclusion)), 'La conclusión del PDF no coincide con la guardada en MySQL');
+});
+
+conBD('PDF: con C0 = 0 muestra "No definido" en el error relativo inicial', async () => {
+  const { datos: sim } = await crearSim({ ...BASE_PARAMS, C0: 0, h: 1 });
+  const { datos: inf } = await api('POST', `/simulaciones/${sim.id}/informes`, {});
+  const texto = textoDePdf((await api('GET', `/informes/${inf.id}/pdf`)).datos);
+  assert.ok(texto.includes('No definido'));
+});
+
+conBD('PDF: el informe de un experimento usa la comparación guardada en MySQL', async () => {
+  const { datos: comp } = await api('POST', '/comparaciones', BASE_PARAMS);
+  creadas.comparaciones.push(comp.id);
+  const { datos: inf } = await api('POST', `/simulaciones/${comp.experimentos[1].idSimulacion}/informes`, {});
+  const texto = textoDePdf((await api('GET', `/informes/${inf.id}/pdf`)).datos);
+  const plano = texto.replace(/\s+/g, '');
+  assert.ok(plano.includes('Experimentosguardadosenlabasededatos'));
+  assert.ok(plano.includes('4.59vecesmenor') && plano.includes('18.14vecesmenor'));
+});
+
+conBD('Rendimiento: 1000 pasos se calculan y guardan en menos de 3 segundos', async () => {
+  const inicio = Date.now();
+  const r = await crearSim({ ...BASE_PARAMS, h: 0.012 });
+  const ms = Date.now() - inicio;
+  assert.equal(r.estado, 201);
+  assert.equal(r.datos.filas.length, 1001);
+  assert.ok(ms < 3000, `tardó ${ms} ms`);
 });
