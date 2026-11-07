@@ -13,6 +13,8 @@ y compara la **solución analítica** `C(t) = M - (M - C0) e^(-k (t - t0))` con 
 > Los parámetros del proyecto (C0 = 10 clientes, M = 100 clientes, k = 0.3 por mes, 0 a 12 meses) son **hipotéticos**.
 > Los resultados son una estimación matemática, no una predicción comprobada.
 
+![TECHFIX](docs/capturas/simulacion.png)
+
 ## Estado del proyecto
 
 | Etapa | Estado |
@@ -21,14 +23,14 @@ y compara la **solución analítica** `C(t) = M - (M - C0) e^(-k (t - t0))` con 
 | 2. Modelo matemático | ✅ `docs/MODELO.md` |
 | 3. Base de datos MySQL | ✅ `docs/BASE_DE_DATOS.md` |
 | 4. Backend (Node.js + Express) | ✅ `docs/BACKEND.md` |
-| 5. Frontend | Pendiente |
+| 5. Frontend (HTML, CSS, JS, Chart.js) | ✅ `docs/FRONTEND.md` |
 | 6. Pruebas | Pendiente |
 | 7. Publicación | Pendiente |
 | 8. Preparación de la defensa | Pendiente |
 
 ## Tecnologías
 
-Node.js 22+, Express, MySQL 8 (mysql2), dotenv, PDFKit, HTML/CSS/JavaScript y Chart.js.
+Node.js 22+, Express, MySQL 8 (mysql2), dotenv, PDFKit, HTML/CSS/JavaScript y Chart.js 4 (servido localmente, sin CDN).
 
 ## Instalación local (resumen)
 

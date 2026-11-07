@@ -177,6 +177,7 @@ function formatearSimulacion(fila, datos, sim) {
     fechaCreacion: fila ? fila.fecha_creacion : null,
     parametros: sim.parametros,
     filas: sim.filas,
+    curvaAnalitica: metodos.curvaAnalitica(sim.parametros),
     resumen: sim.resumen,
     avisos: sim.avisos,
   };
@@ -294,6 +295,7 @@ async function obtenerComparacion(idComparacion) {
   if (!c.length) throw new ErrorHttp(404, 'La comparación no existe.');
   const { experimentos, reducciones } = await leerExperimentos(idComparacion, true);
   return {
+    curvaAnalitica: experimentos.length ? metodos.curvaAnalitica(experimentos[0].parametros) : [],
     id: c[0].id_comparacion,
     descripcion: c[0].descripcion,
     fechaCreacion: c[0].fecha_creacion,

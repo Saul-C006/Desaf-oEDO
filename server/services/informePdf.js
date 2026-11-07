@@ -160,11 +160,7 @@ function grafica(doc, sim) {
   const p = sim.parametros;
 
   // Curva analítica con muchos puntos (es continua); Heun y RK4 en sus nodos.
-  const analitica = [];
-  for (let i = 0; i <= 200; i++) {
-    const t = p.t0 + ((p.tf - p.t0) * i) / 200;
-    analitica.push([t, metodos.solucionAnalitica(t, p)]);
-  }
+  const analitica = metodos.curvaAnalitica(p).map((q) => [q.t, q.C]);
   const heun = sim.filas.map((r) => [r.tiempo, r.heun]);
   const rk4 = sim.filas.map((r) => [r.tiempo, r.rk4]);
   const todos = [...analitica, ...heun, ...rk4].map((v) => v[1]);

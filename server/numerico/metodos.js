@@ -43,6 +43,19 @@ function solucionAnalitica(t, p) {
 }
 
 /**
+ * Puntos de la solución analítica para dibujar la curva exacta de forma suave
+ * (la solución exacta es continua; no depende del tamaño de paso h).
+ */
+function curvaAnalitica(p, puntos = 200) {
+  const curva = [];
+  for (let i = 0; i <= puntos; i++) {
+    const t = p.t0 + ((p.tf - p.t0) * i) / puntos;
+    curva.push({ t, C: solucionAnalitica(t, p) });
+  }
+  return curva;
+}
+
+/**
  * Un paso del método de Heun (RK2):
  *   k1 = f(tn, Cn)
  *   k2 = f(tn + h, Cn + h k1)          <- pendiente en el punto "predicho"
@@ -258,6 +271,7 @@ module.exports = {
   PARAMETROS_PROYECTO,
   derivada,
   solucionAnalitica,
+  curvaAnalitica,
   pasoHeun,
   pasoRK4,
   calcularErrores,

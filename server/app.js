@@ -47,6 +47,10 @@ app.use('/api', (req, res) => res.status(404).json({ error: 'Ruta no encontrada.
 
 // ---------------- Frontend ----------------
 app.use('/shared', express.static(path.join(__dirname, '..', 'shared')));
+// Chart.js se entrega desde node_modules (no depende de un CDN externo durante la defensa)
+app.get('/vendor/chart.umd.min.js', (req, res) => {
+  res.sendFile(path.join(path.dirname(require.resolve('chart.js')), 'chart.umd.min.js'));
+});
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // ---------------- Manejador central de errores ----------------

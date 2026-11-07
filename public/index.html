@@ -1,9 +1,404 @@
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>TECHFIX</title></head>
-<body style="font-family: system-ui, sans-serif; padding: 2rem;">
-  <h1>TECHFIX</h1>
-  <p>Backend en funcionamiento. La interfaz se desarrolla en la Etapa 5.</p>
-  <p>Estado: <a href="/api/salud">/api/salud</a> · Historial: <a href="/api/simulaciones">/api/simulaciones</a></p>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TECHFIX · Simulación de crecimiento de clientes</title>
+  <meta name="description" content="TECHFIX: simulación del crecimiento de clientes de un emprendimiento de soporte técnico con solución analítica, método de Heun y Runge-Kutta 4.">
+  <link rel="icon" href="img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- ===================== Barra lateral ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="marca">
+      <img src="img/logo.svg" alt="" width="34" height="34">
+      <div>
+        <strong>TECHFIX</strong>
+        <span>Simulador de clientes</span>
+      </div>
+    </div>
+
+    <nav class="menu" aria-label="Secciones">
+      <a href="#inicio" data-seccion="inicio"><span class="ico" data-ico="inicio"></span>Inicio</a>
+      <a href="#configuracion" data-seccion="configuracion"><span class="ico" data-ico="configuracion"></span>Configuración</a>
+      <a href="#simulacion" data-seccion="simulacion"><span class="ico" data-ico="simulacion"></span>Simulación</a>
+      <a href="#graficas" data-seccion="graficas"><span class="ico" data-ico="graficas"></span>Gráficas</a>
+      <a href="#comparacion" data-seccion="comparacion"><span class="ico" data-ico="comparacion"></span>Comparación de h</a>
+      <a href="#interpretacion" data-seccion="interpretacion"><span class="ico" data-ico="interpretacion"></span>Interpretación</a>
+      <a href="#historial" data-seccion="historial"><span class="ico" data-ico="historial"></span>Historial</a>
+      <a href="#informes" data-seccion="informes"><span class="ico" data-ico="informes"></span>Informes PDF</a>
+    </nav>
+
+    <div class="estado-servidor" id="estadoServidor" role="status">
+      <span class="punto"></span><span class="texto">Conectando…</span>
+    </div>
+  </aside>
+
+  <!-- ===================== Barra superior (celulares) ===================== -->
+  <header class="topbar">
+    <button class="btn-icono" id="btnMenu" aria-label="Abrir menú" aria-controls="sidebar" aria-expanded="false">☰</button>
+    <div class="marca-mini"><img src="img/logo.svg" alt="" width="26" height="26"><strong>TECHFIX</strong></div>
+  </header>
+  <div class="velo" id="velo" hidden></div>
+
+  <main class="contenido" id="contenido">
+
+    <!-- ===================== A. INICIO ===================== -->
+    <section id="inicio" class="seccion" aria-labelledby="t-inicio">
+      <div class="hero">
+        <div class="hero-texto">
+          <p class="etiqueta">Métodos Numéricos · Ecuaciones diferenciales</p>
+          <h1 id="t-inicio">TECHFIX</h1>
+          <p class="subtitulo">Sistema de simulación del crecimiento de clientes de un emprendimiento de soporte técnico mediante métodos numéricos.</p>
+          <div class="acciones">
+            <a href="#configuracion" class="btn btn-primario">Comenzar una simulación</a>
+            <a href="#historial" class="btn btn-secundario">Ver historial</a>
+          </div>
+        </div>
+        <div class="hero-formula" aria-label="Ecuación del modelo">
+          <span class="formula-grande">dC/dt = k (M − C)</span>
+          <span class="formula-chica">C(t₀) = C₀</span>
+          <span class="formula-chica">C(t) = M − (M − C₀)·e<sup>−k(t − t₀)</sup></span>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <article class="tarjeta">
+          <h3>El emprendimiento</h3>
+          <p>TechFix repara y da mantenimiento a celulares y computadoras. Empieza con pocos clientes y consigue nuevos gracias a la publicidad, las recomendaciones y la calidad de su servicio.</p>
+        </article>
+        <article class="tarjeta">
+          <h3>El problema</h3>
+          <p>El emprendedor no sabe cómo podría evolucionar su cartera de clientes durante los primeros meses. Necesita una estimación para planificar su trabajo.</p>
+        </article>
+        <article class="tarjeta">
+          <h3>El objetivo</h3>
+          <p>Estimar el crecimiento de clientes con una ecuación diferencial y comparar la precisión de los métodos de <b>Heun</b> y <b>Runge-Kutta 4</b> frente a la solución exacta.</p>
+        </article>
+      </div>
+
+      <article class="tarjeta">
+        <h3>¿Cómo funciona el modelo?</h3>
+        <div class="explicacion-modelo">
+          <ol>
+            <li>Si el mercado total es <b>M</b> y ya hay <b>C</b> clientes, faltan <b>M − C</b> por captar.</li>
+            <li>Cada mes se capta una parte <b>k</b> de los que faltan: <b>dC/dt = k(M − C)</b>.</li>
+            <li>Al inicio faltan muchos y el crecimiento es rápido; cerca de M el crecimiento se frena. Por eso es un <b>crecimiento limitado</b>.</li>
+          </ol>
+          <table class="tabla-mini" aria-label="Variables del modelo">
+            <thead><tr><th>Símbolo</th><th>Significado</th><th>Unidad</th></tr></thead>
+            <tbody>
+              <tr><td>t</td><td>Tiempo</td><td>meses</td></tr>
+              <tr><td>C(t)</td><td>Clientes acumulados estimados</td><td>clientes</td></tr>
+              <tr><td>C₀</td><td>Clientes iniciales</td><td>clientes</td></tr>
+              <tr><td>M</td><td>Mercado potencial</td><td>clientes</td></tr>
+              <tr><td>k</td><td>Tasa de crecimiento</td><td>1/mes</td></tr>
+              <tr><td>h</td><td>Tamaño de paso</td><td>meses</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="nota">Pregunta del desafío: ¿cómo puede estimarse el crecimiento de clientes de un emprendimiento de soporte técnico durante sus primeros meses y qué tan precisos son los métodos de Heun y RK4?</p>
+        <p class="nota aviso-hipotetico">Los parámetros del proyecto (C₀ = 10, M = 100, k = 0.3/mes) son <b>hipotéticos</b>. Los resultados son una estimación matemática, no una predicción comprobada.</p>
+      </article>
+    </section>
+
+    <!-- ===================== B. CONFIGURACIÓN ===================== -->
+    <section id="configuracion" class="seccion" aria-labelledby="t-config" hidden>
+      <header class="cabecera">
+        <h2 id="t-config">Configuración de la simulación</h2>
+        <p>Ingrese los parámetros. Los valores predeterminados son los del proyecto (hipotéticos).</p>
+      </header>
+
+      <form id="formSimulacion" class="tarjeta formulario" novalidate>
+        <div class="grid-form">
+          <div class="campo">
+            <label for="C0">Cantidad inicial de clientes (C₀)</label>
+            <div class="entrada"><input id="C0" name="C0" type="text" inputmode="decimal" autocomplete="off"><span class="unidad">clientes</span></div>
+            <small class="ayuda">Mayor o igual a 0.</small><small class="error" data-error="C0"></small>
+          </div>
+          <div class="campo">
+            <label for="M">Mercado potencial (M)</label>
+            <div class="entrada"><input id="M" name="M" type="text" inputmode="decimal" autocomplete="off"><span class="unidad">clientes</span></div>
+            <small class="ayuda">Debe ser mayor que C₀.</small><small class="error" data-error="M"></small>
+          </div>
+          <div class="campo">
+            <label for="k">Tasa de crecimiento (k)</label>
+            <div class="entrada"><input id="k" name="k" type="text" inputmode="decimal" autocomplete="off"><span class="unidad">1/mes</span></div>
+            <small class="ayuda">Mayor que 0.</small><small class="error" data-error="k"></small>
+          </div>
+          <div class="campo">
+            <label for="t0">Tiempo inicial (t₀)</label>
+            <div class="entrada"><input id="t0" name="t0" type="text" inputmode="decimal" autocomplete="off"><span class="unidad">meses</span></div>
+            <small class="error" data-error="t0"></small>
+          </div>
+          <div class="campo">
+            <label for="tf">Tiempo final (t<sub>f</sub>)</label>
+            <div class="entrada"><input id="tf" name="tf" type="text" inputmode="decimal" autocomplete="off"><span class="unidad">meses</span></div>
+            <small class="ayuda">Mayor que t₀.</small><small class="error" data-error="tf"></small>
+          </div>
+          <div class="campo">
+            <label for="h">Tamaño de paso (h)</label>
+            <div class="entrada"><input id="h" name="h" type="text" inputmode="decimal" autocomplete="off"><span class="unidad">meses</span></div>
+            <small class="ayuda">Mayor que 0. Experimentos: 1 y 0.5. Máximo 1000 pasos.</small><small class="error" data-error="h"></small>
+            <div class="pasos-rapidos" role="group" aria-label="Tamaños de paso rápidos">
+              <button type="button" class="chip" data-h="1">h = 1</button>
+              <button type="button" class="chip" data-h="0.5">h = 0.5</button>
+              <button type="button" class="chip" data-h="0.25">h = 0.25</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-form grid-form-2">
+          <div class="campo">
+            <label for="nombre_desafio">Nombre de la simulación <span class="opcional">(opcional)</span></label>
+            <input id="nombre_desafio" name="nombre_desafio" type="text" maxlength="150" placeholder="TECHFIX: crecimiento de clientes">
+            <small class="error" data-error="nombre_desafio"></small>
+          </div>
+          <div class="campo">
+            <label for="descripcion">Descripción <span class="opcional">(opcional)</span></label>
+            <input id="descripcion" name="descripcion" type="text" maxlength="500" placeholder="Ej.: escenario base del proyecto">
+            <small class="error" data-error="descripcion"></small>
+          </div>
+        </div>
+        <div class="campo">
+          <label for="observaciones">Observaciones <span class="opcional">(opcional)</span></label>
+          <textarea id="observaciones" name="observaciones" rows="2" maxlength="2000"></textarea>
+          <small class="error" data-error="observaciones"></small>
+        </div>
+
+        <div class="vista-pasos" id="vistaPasos" aria-live="polite"></div>
+
+        <div class="acciones">
+          <button type="submit" class="btn btn-primario" id="btnEjecutar">▶ Ejecutar y guardar simulación</button>
+          <button type="button" class="btn btn-secundario" id="btnComparar">⇄ Ejecutar comparación h = 1 y h = 0.5</button>
+          <button type="button" class="btn btn-texto" id="btnRestaurar">Restaurar valores del proyecto</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ===================== C. SIMULACIÓN ===================== -->
+    <section id="simulacion" class="seccion" aria-labelledby="t-sim" hidden>
+      <header class="cabecera">
+        <h2 id="t-sim">Resultados de la simulación</h2>
+        <p class="subtitulo-sim" data-sim="titulo"></p>
+      </header>
+      <div class="vacio" data-sin-sim>
+        <p>Todavía no hay una simulación seleccionada.</p>
+        <a href="#configuracion" class="btn btn-primario">Configurar una simulación</a>
+      </div>
+      <div data-con-sim hidden>
+        <div class="parametros-chips" data-sim="parametros"></div>
+        <div class="avisos" data-sim="avisos"></div>
+        <div class="grid-4" data-sim="tarjetas"></div>
+        <div class="tarjeta">
+          <div class="tarjeta-cabecera">
+            <h3>Tabla comparativa</h3>
+            <div class="acciones-chicas">
+              <a href="#graficas" class="btn btn-secundario btn-chico">Ver gráficas</a>
+              <button class="btn btn-secundario btn-chico" data-accion="generar-informe">Generar informe PDF</button>
+            </div>
+          </div>
+          <p class="nota">Ea = |exacto − aproximado| (clientes) · Er = Ea / |exacto| × 100 (%). Los errores muy pequeños se muestran en notación científica (p. ej. 7.68e-4 = 0.000768).</p>
+          <div class="tabla-scroll">
+            <table class="tabla" id="tablaResultados">
+              <thead>
+                <tr>
+                  <th>n</th><th>t (meses)</th><th>Analítica</th>
+                  <th class="col-heun">Heun</th><th class="col-heun">Ea Heun</th><th class="col-heun">Er Heun (%)</th>
+                  <th class="col-rk4">RK4</th><th class="col-rk4">Ea RK4</th><th class="col-rk4">Er RK4 (%)</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== D. GRÁFICAS ===================== -->
+    <section id="graficas" class="seccion" aria-labelledby="t-graf" hidden>
+      <header class="cabecera">
+        <h2 id="t-graf">Gráficas</h2>
+        <p class="subtitulo-sim" data-sim="titulo"></p>
+      </header>
+      <div class="vacio" data-sin-sim>
+        <p>Ejecute o abra una simulación para ver sus gráficas.</p>
+        <a href="#configuracion" class="btn btn-primario">Configurar una simulación</a>
+      </div>
+      <div data-con-sim hidden>
+        <div class="tarjeta">
+          <div class="lienzo"><canvas id="graficaSoluciones" aria-label="Gráfica de la solución analítica, Heun y RK4" role="img"></canvas></div>
+          <p class="nota">La curva analítica se dibuja con 200 puntos porque es continua. Heun y RK4 solo tienen valores en los tiempos t₀, t₀ + h, t₀ + 2h…</p>
+        </div>
+        <div class="tarjeta">
+          <div class="tarjeta-cabecera">
+            <h3 class="sr-solo">Errores</h3>
+            <div class="selector" role="group" aria-label="Escala del eje Y">
+              <button class="chip activo" data-escala="logarithmic">Escala logarítmica</button>
+              <button class="chip" data-escala="linear">Escala lineal</button>
+            </div>
+          </div>
+          <div class="lienzo"><canvas id="graficaErrores" aria-label="Gráfica de errores absolutos de Heun y RK4" role="img"></canvas></div>
+          <p class="nota">Escala logarítmica: cada marca rotulada (1e-1, 1e-2, 1e-3…) es 10 veces menor que la anterior. Permite ver el error de RK4, que es cientos de veces menor que el de Heun.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== E. COMPARACIÓN DE TAMAÑOS DE PASO ===================== -->
+    <section id="comparacion" class="seccion" aria-labelledby="t-comp" hidden>
+      <header class="cabecera">
+        <h2 id="t-comp">Comparación de tamaños de paso</h2>
+        <p>Experimento 1: h = 1 mes · Experimento 2: h = 0.5 meses. Los dos usan los mismos C₀, M, k, t₀ y t<sub>f</sub>.</p>
+      </header>
+      <div class="vacio" data-sin-comp>
+        <p>Ejecute la comparación con los parámetros del formulario. Ambos experimentos se guardan en el historial.</p>
+        <button class="btn btn-primario" data-accion="comparar">⇄ Ejecutar comparación h = 1 y h = 0.5</button>
+      </div>
+      <div data-con-comp hidden>
+        <div class="parametros-chips" data-comp="parametros"></div>
+        <div class="grid-2" data-comp="factores"></div>
+        <div class="tarjeta">
+          <h3>Resumen por experimento</h3>
+          <div class="tabla-scroll">
+            <table class="tabla" id="tablaResumenComp">
+              <thead>
+                <tr><th class="izq">Experimento</th><th>h (meses)</th><th>Pasos</th>
+                  <th class="col-heun">Heun final</th><th class="col-heun">Ea final Heun</th><th class="col-heun">Ea máx. Heun</th>
+                  <th class="col-rk4">RK4 final</th><th class="col-rk4">Ea final RK4</th><th class="col-rk4">Ea máx. RK4</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tarjeta">
+          <h3>Resultados en los mismos tiempos</h3>
+          <p class="nota">Se muestran los tiempos comunes a ambos experimentos (los de h = 1).</p>
+          <div class="tabla-scroll">
+            <table class="tabla" id="tablaComp">
+              <thead>
+                <tr><th>t (meses)</th><th>Analítica</th>
+                  <th class="col-heun">Heun h=1</th><th class="col-heun">Heun h=0.5</th><th class="col-heun">Ea h=1</th><th class="col-heun">Ea h=0.5</th>
+                  <th class="col-rk4">RK4 h=1</th><th class="col-rk4">RK4 h=0.5</th><th class="col-rk4">Ea h=1</th><th class="col-rk4">Ea h=0.5</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tarjeta">
+          <div class="lienzo"><canvas id="graficaComp" aria-label="Errores absolutos de Heun y RK4 con h = 1 y h = 0.5" role="img"></canvas></div>
+        </div>
+        <div class="tarjeta conclusion">
+          <h3>Conclusión sobre el tamaño de paso</h3>
+          <p data-comp="conclusion"></p>
+        </div>
+        <div class="acciones">
+          <button class="btn btn-secundario" data-accion="comparar">⇄ Ejecutar otra comparación con el formulario</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== F. INTERPRETACIÓN ===================== -->
+    <section id="interpretacion" class="seccion" aria-labelledby="t-int" hidden>
+      <header class="cabecera">
+        <h2 id="t-int">Interpretación de resultados</h2>
+        <p class="subtitulo-sim" data-sim="titulo"></p>
+      </header>
+      <div class="vacio" data-sin-sim>
+        <p>Ejecute o abra una simulación para ver su interpretación.</p>
+        <a href="#configuracion" class="btn btn-primario">Configurar una simulación</a>
+      </div>
+      <div data-con-sim hidden>
+        <div class="grid-4" data-sim="tarjetas"></div>
+        <div class="tarjeta"><h3>¿Cómo crece la cartera de clientes?</h3><p data-int="crecimiento"></p><ul data-int="hitos"></ul></div>
+        <div class="grid-2">
+          <div class="tarjeta"><h3>¿Qué método fue más preciso?</h3><p data-int="metodo"></p></div>
+          <div class="tarjeta"><h3>Influencia del tamaño de paso</h3><p data-int="paso"></p></div>
+        </div>
+        <div class="avisos" data-sim="avisos"></div>
+        <div class="tarjeta conclusion"><h3>Conclusión</h3><p data-int="conclusion"></p></div>
+        <div class="tarjeta"><h3>Limitaciones del modelo</h3><ul data-int="limitaciones"></ul></div>
+      </div>
+    </section>
+
+    <!-- ===================== G. HISTORIAL ===================== -->
+    <section id="historial" class="seccion" aria-labelledby="t-hist" hidden>
+      <header class="cabecera cabecera-flex">
+        <div>
+          <h2 id="t-hist">Historial de simulaciones</h2>
+          <p>Simulaciones guardadas en la base de datos MySQL.</p>
+        </div>
+        <button class="btn btn-secundario btn-chico" data-accion="recargar-historial">↻ Actualizar</button>
+      </header>
+      <div class="tarjeta">
+        <div class="tabla-scroll">
+          <table class="tabla tabla-historial" id="tablaHistorial">
+            <thead>
+              <tr><th>N.º</th><th class="izq">Simulación</th><th class="izq">Fecha</th><th class="izq">Parámetros</th><th class="izq">Resultado final</th><th class="izq">Más preciso</th><th>Informes</th><th>Acciones</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="vacio-tabla" id="historialVacio" hidden>No hay simulaciones guardadas todavía.</p>
+      </div>
+    </section>
+
+    <!-- ===================== H. INFORMES ===================== -->
+    <section id="informes" class="seccion" aria-labelledby="t-inf" hidden>
+      <header class="cabecera cabecera-flex">
+        <div>
+          <h2 id="t-inf">Informes PDF</h2>
+          <p>Cada informe queda registrado en MySQL y su PDF se genera con los datos guardados de la simulación.</p>
+        </div>
+        <button class="btn btn-secundario btn-chico" data-accion="recargar-informes">↻ Actualizar</button>
+      </header>
+      <div class="tarjeta" data-con-sim hidden>
+        <div class="tarjeta-cabecera">
+          <div>
+            <h3>Simulación actual</h3>
+            <p class="nota" data-sim="titulo"></p>
+          </div>
+          <button class="btn btn-primario" data-accion="generar-informe">Generar informe PDF</button>
+        </div>
+      </div>
+      <div class="tarjeta">
+        <div class="tabla-scroll">
+          <table class="tabla" id="tablaInformes">
+            <thead><tr><th>N.º</th><th class="izq">Título</th><th class="izq">Simulación</th><th class="izq">Fecha</th><th>Acciones</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="vacio-tabla" id="informesVacio" hidden>No hay informes generados. Abra una simulación y presione «Generar informe PDF».</p>
+      </div>
+    </section>
+
+    <footer class="pie">
+      TECHFIX · Proyecto académico de Métodos Numéricos · Parámetros hipotéticos: los resultados son estimaciones, no predicciones comprobadas.
+    </footer>
+  </main>
+
+  <!-- ===================== Diálogo de confirmación ===================== -->
+  <dialog id="dialogo" class="dialogo" aria-labelledby="dialogoTitulo">
+    <form method="dialog">
+      <h3 id="dialogoTitulo">Confirmar</h3>
+      <p id="dialogoTexto"></p>
+      <div class="acciones">
+        <button value="cancelar" class="btn btn-secundario">Cancelar</button>
+        <button value="aceptar" class="btn btn-peligro" id="dialogoAceptar">Eliminar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Notificaciones -->
+  <div class="avisos-flotantes" id="toasts" aria-live="polite"></div>
+  <!-- Pantalla de carga -->
+  <div class="cargando" id="cargando" hidden><div class="spinner"></div><p id="cargandoTexto">Calculando…</p></div>
+
+  <script src="/vendor/chart.umd.min.js"></script>
+  <script src="/shared/validacion.js"></script>
+  <script src="js/formato.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/graficas.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
