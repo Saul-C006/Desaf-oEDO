@@ -14,7 +14,7 @@
   const $ = (sel, raiz) => (raiz || document).querySelector(sel);
   const $$ = (sel, raiz) => Array.from((raiz || document).querySelectorAll(sel));
 
-  const SECCIONES = ['inicio', 'configuracion', 'simulacion', 'graficas', 'comparacion', 'interpretacion', 'historial', 'informes'];
+  const SECCIONES = ['inicio', 'modelo', 'configuracion', 'simulacion', 'graficas', 'comparacion', 'interpretacion', 'historial', 'informes'];
   const CAMPOS = ['C0', 'M', 'k', 't0', 'tf', 'h'];
 
   const estado = {
@@ -34,6 +34,7 @@
   // ------------------------------------------------------------------ Íconos
   const ICONOS = {
     inicio: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+    modelo: '<path d="M5 5h14M5 19h14M8 5l6 7-6 7"/>',
     configuracion: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
     simulacion: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/>',
     graficas: '<path d="M4 20V4"/><path d="M4 20h16"/><path d="M6 16c3-6 6-8 13-10"/>',

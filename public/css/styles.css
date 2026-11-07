@@ -141,6 +141,16 @@ sub, sup { line-height: 0; }  /* evita que los subíndices (t₀, t_f) desalinee
 .explicacion-modelo ol { margin: 0; padding-left: 1.2rem; }
 .explicacion-modelo li { margin-bottom: 0.5rem; }
 
+/* ----------------------------- Modelo matemático ----------------------------- */
+.formula { font-family: var(--mono); background: var(--superficie-2); border: 1px solid var(--borde); border-left: 3px solid var(--acento); border-radius: 6px; padding: 0.55rem 0.8rem; margin: 0.4rem 0 0.75rem; overflow-x: auto; line-height: 1.7; }
+.formula-linea { font-family: var(--mono); background: var(--superficie-2); padding: 0.05rem 0.35rem; border-radius: 4px; white-space: nowrap; }
+.pasos { padding-left: 1.2rem; margin: 0 0 0.75rem; }
+.pasos li { margin-bottom: 0.55rem; }
+.lista { padding-left: 1.2rem; margin: 0 0 0.75rem; }
+.lista li { margin-bottom: 0.3rem; }
+.borde-heun { border-top: 3px solid var(--heun); }
+.borde-rk4 { border-top: 3px solid var(--rk4); }
+
 /* ----------------------------- Botones ----------------------------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;

@@ -21,6 +21,7 @@
 
     <nav class="menu" aria-label="Secciones">
       <a href="#inicio" data-seccion="inicio"><span class="ico" data-ico="inicio"></span>Inicio</a>
+      <a href="#modelo" data-seccion="modelo"><span class="ico" data-ico="modelo"></span>Modelo matemático</a>
       <a href="#configuracion" data-seccion="configuracion"><span class="ico" data-ico="configuracion"></span>Configuración</a>
       <a href="#simulacion" data-seccion="simulacion"><span class="ico" data-ico="simulacion"></span>Simulación</a>
       <a href="#graficas" data-seccion="graficas"><span class="ico" data-ico="graficas"></span>Gráficas</a>
@@ -100,6 +101,120 @@
         </div>
         <p class="nota">Pregunta del desafío: ¿cómo puede estimarse el crecimiento de clientes de un emprendimiento de soporte técnico durante sus primeros meses y qué tan precisos son los métodos de Heun y RK4?</p>
         <p class="nota aviso-hipotetico">Los parámetros del proyecto (C₀ = 10, M = 100, k = 0.3/mes) son <b>hipotéticos</b>. Los resultados son una estimación matemática, no una predicción comprobada.</p>
+        <div class="acciones"><a href="#modelo" class="btn btn-secundario btn-chico">Ver el modelo matemático completo →</a></div>
+      </article>
+
+      <div class="grid-2">
+        <article class="tarjeta">
+          <h3>Beneficiarios y relevancia</h3>
+          <ul class="lista">
+            <li>Emprendedores tecnológicos y técnicos independientes.</li>
+            <li>Pequeños negocios de reparación de celulares y computadoras.</li>
+            <li>Personas que quieren iniciar un emprendimiento tecnológico.</li>
+          </ul>
+          <p>Saber cuándo llegarán los clientes ayuda a la comunidad emprendedora a planificar horarios, compra de repuestos y publicidad, y a reducir el riesgo de cerrar en los primeros meses.</p>
+        </article>
+        <article class="tarjeta">
+          <h3>Meta cuantificable</h3>
+          <ul class="lista">
+            <li>Estimar los clientes al mes 12 y el mes en que se alcanza el <b>50 %</b> y el <b>90 %</b> del mercado potencial.</li>
+            <li>Medir el error absoluto y relativo de Heun y RK4 frente a la solución exacta con <b>h = 1</b> y <b>h = 0.5</b>.</li>
+            <li>Determinar qué método tiene <b>menor error</b> y cuánto disminuye el error al reducir h.</li>
+          </ul>
+          <p class="nota">Intervalo de simulación: de t₀ = 0 a t<sub>f</sub> = 12 meses (primer año de funcionamiento).</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== MODELO MATEMÁTICO ===================== -->
+    <section id="modelo" class="seccion" aria-labelledby="t-modelo" hidden>
+      <header class="cabecera">
+        <h2 id="t-modelo">Modelo matemático</h2>
+        <p>Formulación de la EDO, solución analítica paso a paso, verificación y métodos numéricos.</p>
+      </header>
+
+      <div class="grid-2">
+        <article class="tarjeta">
+          <h3>1. Variables, parámetros y unidades</h3>
+          <table class="tabla-mini">
+            <thead><tr><th>Símbolo</th><th>Tipo</th><th>Significado</th><th>Unidad</th></tr></thead>
+            <tbody>
+              <tr><td>t</td><td>Variable independiente</td><td>Tiempo desde la apertura</td><td>meses</td></tr>
+              <tr><td>C(t)</td><td>Variable dependiente</td><td>Clientes acumulados estimados</td><td>clientes</td></tr>
+              <tr><td>C₀ = 10</td><td>Parámetro</td><td>Clientes iniciales</td><td>clientes</td></tr>
+              <tr><td>M = 100</td><td>Parámetro</td><td>Mercado potencial</td><td>clientes</td></tr>
+              <tr><td>k = 0.3</td><td>Parámetro</td><td>Tasa de crecimiento</td><td>1/mes</td></tr>
+              <tr><td>h</td><td>Parámetro numérico</td><td>Tamaño de paso</td><td>meses</td></tr>
+            </tbody>
+          </table>
+          <p class="nota">Valores hipotéticos. C puede ser decimal: es una estimación continua, no un conteo de personas.</p>
+        </article>
+        <article class="tarjeta">
+          <h3>2. Formulación y justificación de la EDO</h3>
+          <p>Si el mercado es M y ya hay C clientes, faltan <b>M − C</b>. Se supone que cada mes se capta una fracción <b>k</b> de los que faltan:</p>
+          <div class="formula">dC/dt = k (M − C)  →  dC/dt = 0.3 (100 − C)</div>
+          <div class="formula">Condición inicial: C(0) = 10 clientes</div>
+          <p><b>Unidades:</b> (1/mes)·(clientes) = clientes/mes, igual que dC/dt ✔</p>
+          <p><b>Crecimiento limitado:</b> si C &lt; M, dC/dt &gt; 0 (crece); al acercarse a M la velocidad baja (27 clientes/mes al inicio, 3 clientes/mes con 90 clientes); si C = M, dC/dt = 0 (equilibrio).</p>
+        </article>
+      </div>
+
+      <article class="tarjeta">
+        <h3>3. Supuestos e intervalo</h3>
+        <ul class="lista">
+          <li>M y k son constantes durante el periodo; no hay pérdida de clientes (C es acumulado).</li>
+          <li>No se modela competencia, temporada ni cambios en la publicidad.</li>
+          <li>Intervalo de simulación: 0 ≤ t ≤ 12 meses.</li>
+        </ul>
+      </article>
+
+      <div class="grid-2">
+        <article class="tarjeta">
+          <h3>4. Solución analítica paso a paso</h3>
+          <ol class="pasos">
+            <li>Separar variables: <span class="formula-linea">dC / (M − C) = k dt</span></li>
+            <li>Integrar: <span class="formula-linea">−ln(M − C) = k t + K</span></li>
+            <li>Despejar: <span class="formula-linea">M − C = A e<sup>−kt</sup></span>  (A = e<sup>−K</sup>)</li>
+            <li>Condición inicial C(0) = C₀: <span class="formula-linea">A = M − C₀</span></li>
+            <li>Solución: <span class="formula-linea"><b>C(t) = M − (M − C₀) e<sup>−kt</sup></b></span></li>
+          </ol>
+          <div class="formula">C(t) = 100 − 90 e<sup>−0.3t</sup></div>
+        </article>
+        <article class="tarjeta">
+          <h3>5. Verificación de la solución</h3>
+          <p><b>Por sustitución:</b></p>
+          <div class="formula">C′(t) = 90·0.3·e<sup>−0.3t</sup> = 27 e<sup>−0.3t</sup></div>
+          <div class="formula">0.3 (100 − C) = 0.3·90·e<sup>−0.3t</sup> = 27 e<sup>−0.3t</sup></div>
+          <p>Ambos lados son iguales: la solución cumple la EDO ✔</p>
+          <p><b>Condición inicial:</b> C(0) = 100 − 90·e⁰ = 100 − 90 = <b>10</b> ✔</p>
+          <p><b>Largo plazo:</b> si t → ∞, e<sup>−0.3t</sup> → 0 y C → 100 = M (nunca lo supera) ✔</p>
+          <p class="nota">Además, las pruebas automáticas comparan la aplicación con un programa independiente con aritmética exacta: diferencia máxima 3.7 × 10⁻¹⁴.</p>
+        </article>
+      </div>
+
+      <div class="grid-2">
+        <article class="tarjeta borde-heun">
+          <h3>6. Método de Heun (Runge-Kutta de orden 2)</h3>
+          <p>Mide la pendiente al inicio del paso, predice el punto final con ella, mide la pendiente allí y avanza con el <b>promedio</b> de ambas.</p>
+          <div class="formula">k1 = f(tₙ, Cₙ)<br>k2 = f(tₙ + h, Cₙ + h·k1)<br>Cₙ₊₁ = Cₙ + (h/2)(k1 + k2)</div>
+          <p><b>Primer paso (h = 1):</b> k1 = 0.3·(100 − 10) = 27; k2 = 0.3·(100 − 37) = 18.9; C₁ = 10 + ½(27 + 18.9) = <b>32.95</b> (exacto 33.326360).</p>
+          <p class="nota">Orden 2: el error global es proporcional a h². Al dividir h entre 2, el error baja ≈ 4 veces.</p>
+        </article>
+        <article class="tarjeta borde-rk4">
+          <h3>7. Runge-Kutta de orden 4 (RK4)</h3>
+          <p>Mide <b>cuatro</b> pendientes (inicio, dos en el punto medio y final) y las combina con pesos 1-2-2-1.</p>
+          <div class="formula">k1 = f(tₙ, Cₙ)<br>k2 = f(tₙ + h/2, Cₙ + h·k1/2)<br>k3 = f(tₙ + h/2, Cₙ + h·k2/2)<br>k4 = f(tₙ + h, Cₙ + h·k3)<br>Cₙ₊₁ = Cₙ + (h/6)(k1 + 2k2 + 2k3 + k4)</div>
+          <p><b>Primer paso (h = 1):</b> k1 = 27; k2 = 22.95; k3 = 23.5575; k4 = 19.93275; C₁ = <b>33.324625</b> (error 0.001735, 217 veces menor que Heun).</p>
+          <p class="nota">Orden 4: el error global es proporcional a h⁴. Al dividir h entre 2, el error baja ≈ 16 veces.</p>
+        </article>
+      </div>
+
+      <article class="tarjeta">
+        <h3>8. Errores</h3>
+        <div class="formula">Error absoluto: Eₐ = |valor exacto − valor aproximado|  (clientes)</div>
+        <div class="formula">Error relativo: Eᵣ = Eₐ / |valor exacto| × 100  (%)  — no definido si el valor exacto es 0</div>
+        <p>Los tres procedimientos usan exactamente los mismos C₀, M, k, intervalo y h.</p>
+        <div class="acciones"><a href="#configuracion" class="btn btn-primario">Ejecutar una simulación</a></div>
       </article>
     </section>
 

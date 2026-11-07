@@ -161,9 +161,9 @@ async function paso(nombre, fn) {
   });
 
   for (const [nombre, ancho, alto] of [['Computadora', 1366, 860], ['Tablet', 768, 1024], ['Celular', 390, 844]]) {
-    await paso(`${nombre} (${ancho}px): sin desplazamiento horizontal en las 8 secciones`, async () => {
+    await paso(`${nombre} (${ancho}px): sin desplazamiento horizontal en las 9 secciones`, async () => {
       const p = await navegador.newPage({ viewport: { width: ancho, height: alto }, isMobile: ancho < 800, hasTouch: ancho < 800 });
-      for (const s of ['inicio', 'configuracion', 'simulacion', 'graficas', 'comparacion', 'interpretacion', 'historial', 'informes']) {
+      for (const s of ['inicio', 'modelo', 'configuracion', 'simulacion', 'graficas', 'comparacion', 'interpretacion', 'historial', 'informes']) {
         await p.goto(`${URL}/#${s}`);
         await p.waitForTimeout(250);
         const desborda = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
